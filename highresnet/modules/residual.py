@@ -28,6 +28,8 @@ class ResidualBlock(nn.Module):
         self.change_dimension = in_channels != out_channels
         self.residual_type = residual_type
         self.dimensions = dimensions
+        self.in_channels = in_channels
+        self.out_channels = out_channels
         if self.change_dimension:
             if residual_type == 'project':
                 conv_class = nn.Conv2d if dimensions == 2 else nn.Conv3d
@@ -76,13 +78,13 @@ class ResidualBlock(nn.Module):
                 if self.residual_type == 'project':
                     x = self.change_dim_layer(x)
                 elif self.residual_type == 'pad':
-                    batch_size = x.shape[BATCH_DIM]
-                    x_channels = x.shape[CHANNELS_DIM]
-                    out_channels = out.shape[CHANNELS_DIM]
-                    spatial_dims = x.shape[2:]
-                    diff_channels = out_channels - x_channels
+                    # batch_size = 1
+                    # x_channels = x.shape[CHANNELS_DIM]
+                    # out_channels = out.shape[CHANNELS_DIM]
+                    # spatial_dims = x.shape[2:]
+                    diff_channels = self.out_channels - self.in_channels
                     zeros_half = x.new_zeros(
-                        batch_size, diff_channels // 2, *spatial_dims)
+                        1, diff_channels // 2, 128, 128, 128)
                     x = torch.cat((zeros_half, x, zeros_half),
                                   dim=CHANNELS_DIM)
             out = x + out
