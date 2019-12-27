@@ -84,7 +84,7 @@ class ResidualBlock(nn.Module):
                     # spatial_dims = x.shape[2:]
                     diff_channels = self.out_channels - self.in_channels
                     zeros_half = x.new_zeros(
-                        1, diff_channels // 2, 128, 128, 128)
+                        1, diff_channels // 2, 96, 96, 96)
                     x = torch.cat((zeros_half, x, zeros_half),
                                   dim=CHANNELS_DIM)
             out = x + out
